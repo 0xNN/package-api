@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ConnoteController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\KoliController;
 use Illuminate\Http\Request;
@@ -22,3 +23,4 @@ use Illuminate\Support\Facades\Route;
 
 Route::resource('package', TransactionController::class);
 Route::resource('koli', KoliController::class);
+Route::resource('connote', ConnoteController::class);

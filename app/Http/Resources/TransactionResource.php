@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Connote;
+use App\Models\Koli;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class TransactionResource extends JsonResource
@@ -33,11 +35,11 @@ class TransactionResource extends JsonResource
             "transaction_cash_amount" => $this->transaction_cash_amount,
             "transaction_cash_change" => $this->transaction_cash_change,
             "customer_attribute" => $this->customer_attribute,
-            "connote" => $this->connote,
+            "connote" => new ConnoteResource(Connote::where('connote_id',$this->connote_id)->first()),
             "connote_id" => $this->connote_id,
             "origin_data" => $this->origin_data,
             "destination_data" => $this->destination_data,
-            "koli_data" => $this->koli_data,
+            "koli_data" => KoliData::collection(Koli::where('connote_id',$this->connote_id)->get()),
             "custom_field" => $this->custom_field,
             "currentLocation" => $this->currentLocation,
         ];
