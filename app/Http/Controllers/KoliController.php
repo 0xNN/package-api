@@ -39,6 +39,7 @@ class KoliController extends Controller
      */
     public function store(Request $request)
     {
+        // Create Validator
         $validator = Validator::make($request->all(),[
             'koli_length' => 'required|numeric',
             'koli_chargeable_weight' => 'required|numeric',
@@ -53,14 +54,21 @@ class KoliController extends Controller
             'connote_total_package' => 'required'
         ]);
 
+        // If fail validation then not store koli
         if($validator->fails()) {
             return response()->json($validator->messages(), 200);
         }
 
+        // Get Count Koli From DB
         $kolis_count = Koli::where('connote_id', $request->connote_id)->count();
+
+        // If count < count from request then store koli
         if($kolis_count < $request->connote_total_package) {
+
+            // replace request for koli_code
             $request->merge(['koli_code' => $request->koli_code.'.'.($kolis_count+1)]);
 
+            // Create Instance From Koli And Save to DB
             $kolis = new Koli;
             $kolis->koli_length = $request->koli_length;
             $kolis->awb_url = "https://tracking.mile.app/label/".$request->koli_code;
@@ -79,6 +87,7 @@ class KoliController extends Controller
             $kolis->koli_code = $request->koli_code;
             $kolis->save();
 
+            // If success response data Koli to Json
             if($kolis){
                 return response()->json([
                     'data'=>$kolis,
@@ -88,7 +97,7 @@ class KoliController extends Controller
                 ], 200);
             }
         }
-        else {
+        else { // If Count > Count From Request Response "Melebihi Total Paket"
             return response()->json([
                 'data'=>[],
                 'response'=>'true',

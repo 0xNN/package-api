@@ -39,6 +39,7 @@ class ConnoteController extends Controller
      */
     public function store(Request $request)
     {
+        // Create Validator
         $validator = Validator::make($request->all(),[
             'connote_id' => 'required|unique:connote|max:36',
             'connote_number' => 'required|numeric',
@@ -66,10 +67,12 @@ class ConnoteController extends Controller
             'id_source_tariff' => 'required',
         ]);
 
+        // If fail validation not store Connote
         if($validator->fails()) {
             return response()->json($validator->messages(), 200);
         }
 
+        // If success Then create instance object and store
         try {
             $connote = new Connote;
             $connote->connote_id = $request->connote_id;
@@ -106,6 +109,7 @@ class ConnoteController extends Controller
             return response()->json($ex->getMessage(), 409);
         }
         
+        // If success store then response connote data to Json
         if($connote) {
             return response()->json([
                 'data'=>$connote,
